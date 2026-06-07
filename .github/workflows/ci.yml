@@ -60,7 +60,11 @@ jobs:
         env:
           DATABASE_URL: "sqlite:///test.db"
           SECRET_KEY: "ci-test-secret-key-not-for-production"
-        run: python -c "from main import app; print(f'App loaded: {app.title} v{app.version}')"
+        run: |
+          python -c "
+          from main import app
+          print('App loaded:', app.title, 'v' + app.version)
+          "
 
   security:
     name: Dependency Security Audit
