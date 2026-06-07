@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from core.database import get_db
-from core.dependencies import get_current_admin, get_sales_access
+from core.dependencies import get_sales_access
 from features.sales.schemas import PaymentStatusUpdate, SalesSummary, PaymentCreate
 from features.sales.service import (
     get_payments,
@@ -35,16 +35,22 @@ def list_payments(
     payments = get_payments(db, payment_status=status, skip=skip, limit=limit)
     result = []
     for payment in payments:
-        result.append({
-            "id": payment.id,
-            "order_id": payment.order_id,
-            "amount": payment.amount,
-            "method": payment.method,
-            "status": payment.status,
-            "created_at": payment.created_at,
-            "customer_name": payment.order.customer.name if payment.order and payment.order.customer else None,
-            "table_number": payment.order.table.table_number if payment.order and payment.order.table else None,
-        })
+        result.append(
+            {
+                "id": payment.id,
+                "order_id": payment.order_id,
+                "amount": payment.amount,
+                "method": payment.method,
+                "status": payment.status,
+                "created_at": payment.created_at,
+                "customer_name": payment.order.customer.name
+                if payment.order and payment.order.customer
+                else None,
+                "table_number": payment.order.table.table_number
+                if payment.order and payment.order.table
+                else None,
+            }
+        )
     return result
 
 
@@ -64,7 +70,7 @@ def change_payment_status(
         "status": payment.status,
         "created_at": payment.created_at,
     }
-    
+
 
 @router.post("/payments")
 def register_payment(

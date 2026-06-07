@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session, joinedload
 
 from features.sales.models import Payment
 from features.orders.models import Order
-from features.orders.models import Order
 
 VALID_PAYMENT_STATUSES = ["pending", "payment_received", "completed", "failed"]
 
@@ -17,9 +16,7 @@ def get_payments(
     skip: int = 0,
     limit: int = 50,
 ) -> List[Payment]:
-    query = db.query(Payment).options(
-        joinedload(Payment.order)
-    )
+    query = db.query(Payment).options(joinedload(Payment.order))
     if payment_status:
         query = query.filter(Payment.status == payment_status)
 
@@ -29,22 +26,16 @@ def get_payments(
 def get_sales_summary(db: Session) -> dict:
     total_orders = db.query(Order).count()
 
-    completed = db.query(Payment).filter(
-        Payment.status == "completed"
-    ).all()
+    completed = db.query(Payment).filter(Payment.status == "completed").all()
     total_revenue = sum(p.amount or 0 for p in completed)
 
-    pending_payments = db.query(Payment).filter(
-        Payment.status == "pending"
-    ).count()
+    pending_payments = db.query(Payment).filter(Payment.status == "pending").count()
 
-    completed_payments = db.query(Payment).filter(
-        Payment.status == "completed"
-    ).count()
+    completed_payments = db.query(Payment).filter(Payment.status == "completed").count()
 
-    payment_received = db.query(Payment).filter(
-        Payment.status == "payment_received"
-    ).count()
+    payment_received = (
+        db.query(Payment).filter(Payment.status == "payment_received").count()
+    )
 
     return {
         "total_orders": total_orders,
@@ -77,6 +68,7 @@ def update_payment_status(
     db.commit()
     db.refresh(payment)
     return payment
+
 
 def create_payment(
     db: Session,

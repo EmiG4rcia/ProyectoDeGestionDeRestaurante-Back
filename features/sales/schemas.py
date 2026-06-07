@@ -28,7 +28,8 @@ class SalesSummary(BaseModel):
     pending_payments: int
     completed_payments: int
     payment_received_pending: int
-    
+
+
 class PaymentCreate(BaseModel):
     order_id: int
     amount: float

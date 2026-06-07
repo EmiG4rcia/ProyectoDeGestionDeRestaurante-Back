@@ -6,7 +6,6 @@ from core.dependencies import get_current_admin
 from features.menu.schemas import MenuItemCreate, MenuItemUpdate, MenuItemResponse
 from features.menu.service import (
     get_menu_items,
-    get_menu_item_by_id,
     create_menu_item,
     update_menu_item,
     delete_menu_item,

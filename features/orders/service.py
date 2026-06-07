@@ -5,14 +5,15 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 
 from features.orders.models import Order, OrderItem
-from features.customers.models import Customer
-from features.tables.models import Table
-from features.menu.models import MenuItem
 
 
 VALID_STATUSES = [
-    "pending", "confirmed", "preparing",
-    "ready", "delivered", "cancelled"
+    "pending",
+    "confirmed",
+    "preparing",
+    "ready",
+    "delivered",
+    "cancelled",
 ]
 
 
@@ -47,11 +48,16 @@ def get_orders(
 
 
 def get_order_by_id(db: Session, order_id: int) -> Order:
-    order = db.query(Order).options(
-        joinedload(Order.items).joinedload(OrderItem.menu_item),
-        joinedload(Order.customer),
-        joinedload(Order.table),
-    ).filter(Order.id == order_id).first()
+    order = (
+        db.query(Order)
+        .options(
+            joinedload(Order.items).joinedload(OrderItem.menu_item),
+            joinedload(Order.customer),
+            joinedload(Order.table),
+        )
+        .filter(Order.id == order_id)
+        .first()
+    )
 
     if not order:
         raise HTTPException(
@@ -79,6 +85,7 @@ def update_order_status(db: Session, order_id: int, new_status: str) -> Order:
     db.commit()
     db.refresh(order)
     return order
+
 
 def create_order(
     db: Session,

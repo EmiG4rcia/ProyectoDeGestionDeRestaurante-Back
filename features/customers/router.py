@@ -44,9 +44,12 @@ def get_customer(
     current_admin: dict = Depends(get_current_admin),
 ):
     customer = get_customer_by_id(db, customer_id)
-    orders = db.query(Order).filter(
-        Order.customer_id == customer_id
-    ).order_by(Order.created_at.desc()).all()
+    orders = (
+        db.query(Order)
+        .filter(Order.customer_id == customer_id)
+        .order_by(Order.created_at.desc())
+        .all()
+    )
 
     return {
         "id": customer.id,

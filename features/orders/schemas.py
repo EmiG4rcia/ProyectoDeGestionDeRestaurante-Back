@@ -42,7 +42,8 @@ class OrderFilters(BaseModel):
     customer_id: Optional[int] = None
     date_from: Optional[datetime] = None
     date_to: Optional[datetime] = None
-    
+
+
 class OrderItemCreate(BaseModel):
     menu_item_id: int
     quantity: int

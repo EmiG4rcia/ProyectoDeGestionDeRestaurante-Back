@@ -26,9 +26,7 @@ def get_table_by_id(db: Session, table_id: int) -> Table:
 
 
 def create_table(db: Session, data: TableCreate) -> Table:
-    existing = db.query(Table).filter(
-        Table.table_number == data.table_number
-    ).first()
+    existing = db.query(Table).filter(Table.table_number == data.table_number).first()
     if existing:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

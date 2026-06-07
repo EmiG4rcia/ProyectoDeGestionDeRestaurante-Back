@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DECIMAL, TIMESTAMP, ForeignKey, Enum
+from sqlalchemy import Column, Integer, DECIMAL, TIMESTAMP, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -13,7 +13,7 @@ class Order(Base):
     table_id = Column(Integer, ForeignKey("tables.id"), nullable=True)
     status = Column(
         Enum("pending", "confirmed", "preparing", "ready", "delivered", "cancelled"),
-        default="pending"
+        default="pending",
     )
     total_amount = Column(DECIMAL(10, 2), nullable=True)
     created_at = Column(TIMESTAMP, server_default=func.now())

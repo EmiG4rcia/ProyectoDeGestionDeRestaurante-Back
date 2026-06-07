@@ -4,7 +4,6 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, Query
 
-from fastapi import APIRouter, Depends, Query
 from core.database import get_db
 from core.dependencies import get_current_admin, get_sales_access
 from features.orders.schemas import OrderResponse, OrderStatusUpdate, OrderCreate
@@ -114,7 +113,7 @@ def change_order_status(
         "table_number": order.table.table_number if order.table else None,
         "items": [],
     }
-    
+
 
 @router.get("/summary")
 def orders_summary(
@@ -122,21 +121,23 @@ def orders_summary(
     current_admin: dict = Depends(get_current_admin),
 ):
     from datetime import date
+
     today = date.today()
-    
-    total_today = db.query(Order).filter(
-        func.date(Order.created_at) == today
-    ).count()
-    
-    pending = db.query(Order).filter(
-        Order.status.in_(["pending", "confirmed", "preparing"])
-    ).count()
+
+    total_today = db.query(Order).filter(func.date(Order.created_at) == today).count()
+
+    pending = (
+        db.query(Order)
+        .filter(Order.status.in_(["pending", "confirmed", "preparing"]))
+        .count()
+    )
 
     return {
         "orders_today": total_today,
         "pending_orders": pending,
     }
-    
+
+
 @router.post("")
 def create_new_order(
     body: OrderCreate,
@@ -144,7 +145,10 @@ def create_new_order(
     current_admin: dict = Depends(get_sales_access),
 ):
     from features.orders.service import create_order
-    order = create_order(db, body.customer_id, body.table_id, [i.model_dump() for i in body.items])
+
+    order = create_order(
+        db, body.customer_id, body.table_id, [i.model_dump() for i in body.items]
+    )
     return {
         "id": order.id,
         "customer_id": order.customer_id,
@@ -166,5 +170,6 @@ def remove_order(
     current_admin: dict = Depends(get_sales_access),
 ):
     from features.orders.service import delete_order
+
     delete_order(db, order_id)
-    return {"message": f"Pedido {order_id} eliminado correctamente"}    
+    return {"message": f"Pedido {order_id} eliminado correctamente"}

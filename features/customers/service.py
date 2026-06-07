@@ -8,7 +8,13 @@ from features.orders.models import Order
 
 
 def get_customers(db: Session, skip: int = 0, limit: int = 50) -> List[Customer]:
-    return db.query(Customer).order_by(Customer.created_at.desc()).offset(skip).limit(limit).all()
+    return (
+        db.query(Customer)
+        .order_by(Customer.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 
 def get_customer_by_id(db: Session, customer_id: int) -> Customer:
@@ -26,9 +32,9 @@ def get_customer_order_count(db: Session, customer_id: int) -> int:
 
 
 def create_customer(db: Session, data: CustomerCreate) -> Customer:
-    existing = db.query(Customer).filter(
-        Customer.phone_number == data.phone_number
-    ).first()
+    existing = (
+        db.query(Customer).filter(Customer.phone_number == data.phone_number).first()
+    )
     if existing:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
