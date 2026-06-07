@@ -71,7 +71,7 @@ cd ProyectoDeGestionDeRestaurante-Back
 python -m venv .venv
 
 # Windows
-.venv\Scripts\activate
+.venv\Scripts\Activate.ps1
 
 # Linux / macOS
 source .venv/bin/activate
@@ -83,11 +83,14 @@ pip install -r requirements.txt
 cp .env.example .env
 # Editar .env con tu DATABASE_URL y SECRET_KEY
 
-# 5. Crear el primer administrador (si la tabla admin_users está vacía)
-python scripts/seed_admin.py
+# 5. Crear la base de datos y el primer administrador
+# Solo es necesario correr este comando UNA SOLA VEZ en una instalación nueva.
+# Crea la base de datos, las tablas, el menú inicial, las mesas
+# y solicita interactivamente las credenciales del administrador.
+python setup_db.py
 
 # 6. Iniciar el servidor
-uvicorn main:app --reload --host 127.0.0.1 --port 8000
+fastapi dev main.py
 ```
 
 La API estará disponible en **http://127.0.0.1:8000**.  
