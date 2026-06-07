@@ -15,6 +15,7 @@ from features.orders.models import Order, OrderItem
 from features.menu.models import MenuItem
 from features.tables.models import Table
 from features.sales.models import Payment
+from core.config import settings
 from core.database import Base, engine
 from core.database import SessionLocal
 
@@ -75,7 +76,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=settings.cors_origins_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
