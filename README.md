@@ -56,7 +56,9 @@ Los módulos principales cubren:
 
 - [Python](https://www.python.org/) ≥ 3.11
 - [MySQL](https://www.mysql.com/) ≥ 8.0 (local o servicio en la nube)
-- Base de datos creada con las tablas del proyecto
+- [Git](https://git-scm.com/) (opcional, para clonar el repo)
+
+> En una instalación nueva, `setup_db.py` crea la base de datos, las tablas y los datos iniciales. No hace falta crear las tablas manualmente.
 
 ---
 
@@ -64,7 +66,7 @@ Los módulos principales cubren:
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/TU_USUARIO/ProyectoDeGestionDeRestaurante-Back.git
+git clone https://github.com/EmiG4rcia/ProyectoDeGestionDeRestaurante-Back.git
 cd ProyectoDeGestionDeRestaurante-Back
 
 # 2. Crear entorno virtual
@@ -112,13 +114,19 @@ Documentación Swagger: **http://127.0.0.1:8000/docs**
 
 ## Credenciales de prueba
 
-Tras ejecutar `scripts/seed_admin.py` con los valores por defecto:
+Si usaste `setup_db.py`, las credenciales son las que definiste al crear el admin. Como referencia para desarrollo:
 
-| Campo | Valor |
-|-------|-------|
+| Campo | Valor sugerido |
+|-------|----------------|
 | Usuario | `admin` |
 | Contraseña | `admin1234` |
 | Contraseña de ventas | `ventas1234` |
+
+Alternativa rápida (solo admin, sin seed completo):
+
+```bash
+python scripts/seed_admin.py
+```
 
 > El **token de ventas** no es una credencial fija: se obtiene en runtime vía `POST /auth/sales-verify` al ingresar la contraseña de ventas (válido 15 minutos).
 
@@ -182,6 +190,7 @@ Documentación completa e interactiva en `/docs`.
 
 ```
 ProyectoDeGestionDeRestaurante-Back/
+├── .github/workflows/  # Pipeline CI (GitHub Actions)
 ├── core/               # Config, DB, seguridad, dependencias
 ├── features/
 │   ├── auth/           # Autenticación JWT
@@ -191,10 +200,12 @@ ProyectoDeGestionDeRestaurante-Back/
 │   ├── sales/          # Ventas y pagos
 │   └── tables/         # Mesas y QR
 ├── scripts/
-│   └── seed_admin.py   # Crear primer administrador
+│   └── seed_admin.py   # Crear admin (alternativa a setup_db.py)
 ├── shared/
 │   └── uow.py          # Unit of Work (transacciones)
 ├── main.py             # Punto de entrada FastAPI
+├── setup_db.py         # Setup inicial: BD, tablas, seed y admin
+├── ruff.toml           # Configuración del linter
 ├── requirements.txt
 └── .env.example
 ```
@@ -205,36 +216,60 @@ Arquitectura por **features**: cada módulo contiene `models.py`, `schemas.py`, 
 
 ## Despliegue
 
-### Render / Railway (recomendado)
+### Backend — Render / Railway (recomendado)
 
-1. Crear servicio web con Python 3.11
-2. Build command: `pip install -r requirements.txt`
-3. Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-4. Configurar variables de entorno (`DATABASE_URL`, `SECRET_KEY`, etc.)
-5. Usar MySQL en la nube (PlanetScale, Railway MySQL, Aiven, etc.)
-6. Actualizar `allow_origins` en `main.py` con la URL del frontend en Vercel
+1. Conectar el repositorio de GitHub
+2. Runtime: **Python 3.11**
+3. Build command: `pip install -r requirements.txt`
+4. Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+5. Configurar variables de entorno: `DATABASE_URL`, `SECRET_KEY`, etc.
+6. Usar MySQL en la nube (Railway MySQL, PlanetScale, Aiven, etc.)
+7. **CORS:** agregar la URL del frontend en Vercel dentro de `allow_origins` en `main.py` y redeployar
 
-### CI/CD — GitHub Actions
+### Frontend — Vercel
 
-El pipeline en `.github/workflows/ci.yml` verifica en cada push/PR:
+El panel React se despliega por separado. Configurar `VITE_API_URL` con la URL pública de este backend.
 
-- Instalación de dependencias
-- Importación correcta de la aplicación
+Repositorio frontend: [ProyectoDeGestionDeRestaurante-Front](https://github.com/EmiG4rcia/ProyectoDeGestionDeRestaurante-Front)
+
+---
+
+## CI — GitHub Actions
+
+En cada **push** o **pull request** a `main`/`master`, el pipeline en `.github/workflows/ci.yml` ejecuta **tres jobs en paralelo**:
+
+| Job | Herramienta | Qué valida |
+|-----|-------------|------------|
+| **Lint & Format** | [Ruff](https://docs.astral.sh/ruff/) | Estilo de código y errores estáticos (Python 3.11 y 3.12) |
+| **Import & App Verification** | Smoke test | Que la app FastAPI inicialice sin errores (Python 3.11 y 3.12) |
+| **Dependency Security Audit** | [pip-audit](https://pypi.org/project/pip-audit/) | Vulnerabilidades conocidas en dependencias (Python 3.12) |
+
+Si cualquier job falla, el pipeline se marca como fallido.
+
+**Ejecutar checks localmente:**
+
+```bash
+pip install ruff
+ruff check .
+ruff format --check .
+```
+
+> Documentación completa del pipeline en [`INFORME_TECNICO.md`](./INFORME_TECNICO.md) (sección 9).
 
 ---
 
 ## Repositorios relacionados
 
-| Repo | Descripción |
-|------|-------------|
+| Repo | Enlace |
+|------|--------|
 | **Frontend** | [ProyectoDeGestionDeRestaurante-Front](https://github.com/EmiG4rcia/ProyectoDeGestionDeRestaurante-Front) |
-| **Backend** | Este repositorio — [PENDIENTE — URL GitHub] |
+| **Backend** | [ProyectoDeGestionDeRestaurante-Back](https://github.com/EmiG4rcia/ProyectoDeGestionDeRestaurante-Back) |
 
 ---
 
 ## Autores
 
-Proyecto desarrollado como **Trabajo Práctico Integrador** — Tecnicatura en Programación, 4° Semestre, Gestión de Desarrollo de Software.
+Proyecto desarrollado en equipo como **Trabajo Práctico Integrador** — Tecnicatura en Programación, 4° Semestre, Gestión de Desarrollo de Software.
 
 ---
 
