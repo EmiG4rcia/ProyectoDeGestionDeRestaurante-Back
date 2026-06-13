@@ -63,6 +63,29 @@ def list_orders(
     return result
 
 
+@router.get("/summary")
+def orders_summary(
+    db: Session = Depends(get_db),
+    current_admin: dict = Depends(get_current_admin),
+):
+    from datetime import date
+
+    today = date.today()
+
+    total_today = db.query(Order).filter(func.date(Order.created_at) == today).count()
+
+    pending = (
+        db.query(Order)
+        .filter(Order.status.in_(["pending", "confirmed", "preparing"]))
+        .count()
+    )
+
+    return {
+        "orders_today": total_today,
+        "pending_orders": pending,
+    }
+
+
 @router.get("/{order_id}", response_model=OrderResponse)
 def get_order(
     order_id: int,
@@ -112,29 +135,6 @@ def change_order_status(
         "customer_name": order.customer.name if order.customer else None,
         "table_number": order.table.table_number if order.table else None,
         "items": [],
-    }
-
-
-@router.get("/summary")
-def orders_summary(
-    db: Session = Depends(get_db),
-    current_admin: dict = Depends(get_current_admin),
-):
-    from datetime import date
-
-    today = date.today()
-
-    total_today = db.query(Order).filter(func.date(Order.created_at) == today).count()
-
-    pending = (
-        db.query(Order)
-        .filter(Order.status.in_(["pending", "confirmed", "preparing"]))
-        .count()
-    )
-
-    return {
-        "orders_today": total_today,
-        "pending_orders": pending,
     }
 
 
