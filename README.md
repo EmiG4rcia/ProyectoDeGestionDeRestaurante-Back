@@ -8,10 +8,17 @@ API REST para el panel de administración de un restaurante. Expone endpoints pa
 
 ---
 
+## Informe Técnico
+
+[https://drive.google.com/file/d/15zjwHGHLNEHQWSPfXynZBopaJh3G1IA7/view?usp=drive_link](https://drive.google.com/file/d/15zjwHGHLNEHQWSPfXynZBopaJh3G1IA7/view?usp=drive_link)
+
+---
+
 ## Demo en línea
 
-| Recurso | URL |
-|---------|-----|
+
+| Recurso            | URL                                                     |
+| ------------------ | ------------------------------------------------------- |
 | **App desplegada** | `https://proyecto-de-gestion-de-restaurante.vercel.app` |
 
 
@@ -19,11 +26,13 @@ API REST para el panel de administración de un restaurante. Expone endpoints pa
 
 ### Credenciales para probar la demo (panel de administración)
 
-| Campo | Valor |
-|-------|-------|
-| Usuario | `admin` |
-| Contraseña | `admin1234` |
+
+| Campo                | Valor        |
+| -------------------- | ------------ |
+| Usuario              | `admin`      |
+| Contraseña           | `admin1234`  |
 | Contraseña de ventas | `ventas1234` |
+
 
 > **Contraseña de ventas:** credencial adicional del administrador. El frontend la solicita al crear/eliminar pedidos, gestionar clientes o registrar pagos. Se valida con `POST /auth/sales-verify` y devuelve un **sales_token** JWT válido 15 minutos. No reemplaza la contraseña de login (`POST /auth/login`).
 
@@ -35,14 +44,16 @@ Este backend es la capa de servicios del sistema **Jill's Sandwich**. Persiste l
 
 Los módulos principales cubren:
 
-| Módulo | Descripción |
-|--------|-------------|
-| **Auth** | Login JWT, verificación de ventas, cambio de contraseñas y recuperación |
-| **Orders** | CRUD de pedidos, filtros, resumen del día y flujo de estados |
-| **Customers** | Alta, edición y baja de clientes |
-| **Menu** | Gestión de platos con precio, categoría y disponibilidad |
-| **Tables** | Control de mesas y generación de QR |
-| **Sales** | Resumen de ingresos y registro de pagos |
+
+| Módulo        | Descripción                                                             |
+| ------------- | ----------------------------------------------------------------------- |
+| **Auth**      | Login JWT, verificación de ventas, cambio de contraseñas y recuperación |
+| **Orders**    | CRUD de pedidos, filtros, resumen del día y flujo de estados            |
+| **Customers** | Alta, edición y baja de clientes                                        |
+| **Menu**      | Gestión de platos con precio, categoría y disponibilidad                |
+| **Tables**    | Control de mesas y generación de QR                                     |
+| **Sales**     | Resumen de ingresos y registro de pagos                                 |
+
 
 ---
 
@@ -89,18 +100,20 @@ python setup_db.py
 fastapi dev main.py
 ```
 
-La API estará disponible en **http://127.0.0.1:8000**.  
-Documentación Swagger: **http://127.0.0.1:8000/docs**
+La API estará disponible en **[http://127.0.0.1:8000](http://127.0.0.1:8000)**.  
+Documentación Swagger: **[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)**
 
 ### Credenciales en entorno local
 
 Si usaste `setup_db.py`, las credenciales son las que definiste al crear el admin. Como referencia para desarrollo (y demo en producción):
 
-| Campo | Valor sugerido |
-|-------|----------------|
-| Usuario | `admin` |
-| Contraseña | `admin1234` |
-| Contraseña de ventas | `ventas1234` |
+
+| Campo                | Valor sugerido |
+| -------------------- | -------------- |
+| Usuario              | `admin`        |
+| Contraseña           | `admin1234`    |
+| Contraseña de ventas | `ventas1234`   |
+
 
 Alternativa rápida (solo admin, sin seed completo):
 
@@ -116,29 +129,33 @@ Para desarrollo local con el frontend, incluir `http://localhost:5173` en `CORS_
 
 ## Stack tecnológico
 
-| Tecnología | Uso |
-|------------|-----|
-| [FastAPI](https://fastapi.tiangolo.com/) | Framework web y documentación OpenAPI |
-| [SQLAlchemy 2](https://www.sqlalchemy.org/) | ORM y mapeo de entidades |
-| [MySQL](https://www.mysql.com/) | Base de datos relacional |
-| [PyMySQL](https://pypi.org/project/PyMySQL/) | Driver de conexión |
-| [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/) | Configuración vía `.env` |
-| [python-jose](https://python-jose.readthedocs.io/) | Tokens JWT |
-| [passlib + bcrypt](https://passlib.readthedocs.io/) | Hash de contraseñas |
-| [Uvicorn](https://www.uvicorn.org/) | Servidor ASGI |
+
+| Tecnología                                                                        | Uso                                   |
+| --------------------------------------------------------------------------------- | ------------------------------------- |
+| [FastAPI](https://fastapi.tiangolo.com/)                                          | Framework web y documentación OpenAPI |
+| [SQLAlchemy 2](https://www.sqlalchemy.org/)                                       | ORM y mapeo de entidades              |
+| [MySQL](https://www.mysql.com/)                                                   | Base de datos relacional              |
+| [PyMySQL](https://pypi.org/project/PyMySQL/)                                      | Driver de conexión                    |
+| [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/) | Configuración vía `.env`              |
+| [python-jose](https://python-jose.readthedocs.io/)                                | Tokens JWT                            |
+| [passlib + bcrypt](https://passlib.readthedocs.io/)                               | Hash de contraseñas                   |
+| [Uvicorn](https://www.uvicorn.org/)                                               | Servidor ASGI                         |
+
 
 ---
 
 ## Variables de entorno
 
-| Variable | Descripción | Ejemplo |
-|----------|-------------|---------|
-| `DATABASE_URL` | Cadena de conexión SQLAlchemy | `mysql+pymysql://root@localhost:3306/jills_sandwich` |
-| `SECRET_KEY` | Clave para firmar JWT | Clave larga y aleatoria |
-| `ALGORITHM` | Algoritmo JWT | `HS256` |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | Duración del token de acceso | `480` |
-| `SALES_TOKEN_EXPIRE_MINUTES` | Duración del token de ventas | `15` |
-| `CORS_ORIGINS` | Orígenes permitidos (separados por coma) | `http://localhost:5173,https://proyecto-de-gestion-de-restaurante.vercel.app` |
+
+| Variable                      | Descripción                              | Ejemplo                                                                       |
+| ----------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------- |
+| `DATABASE_URL`                | Cadena de conexión SQLAlchemy            | `mysql+pymysql://root@localhost:3306/jills_sandwich`                          |
+| `SECRET_KEY`                  | Clave para firmar JWT                    | Clave larga y aleatoria                                                       |
+| `ALGORITHM`                   | Algoritmo JWT                            | `HS256`                                                                       |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Duración del token de acceso             | `480`                                                                         |
+| `SALES_TOKEN_EXPIRE_MINUTES`  | Duración del token de ventas             | `15`                                                                          |
+| `CORS_ORIGINS`                | Orígenes permitidos (separados por coma) | `http://localhost:5173,https://proyecto-de-gestion-de-restaurante.vercel.app` |
+
 
 ---
 
@@ -146,15 +163,17 @@ Para desarrollo local con el frontend, incluir `http://localhost:5173` en `CORS_
 
 Entidades principales en MySQL:
 
-| Tabla | Descripción |
-|-------|-------------|
-| `admin_users` | Usuarios del panel con contraseña y contraseña de ventas hasheadas |
-| `customers` | Clientes identificados por teléfono |
-| `tables` | Mesas con estado y token QR |
-| `menu_items` | Platos del menú |
-| `orders` / `order_items` | Pedidos y sus ítems |
-| `payments` | Pagos asociados a pedidos |
-| `sessions` / `message_logs` | Sesiones y logs del canal conversacional (proyecto base) |
+
+| Tabla                       | Descripción                                                        |
+| --------------------------- | ------------------------------------------------------------------ |
+| `admin_users`               | Usuarios del panel con contraseña y contraseña de ventas hasheadas |
+| `customers`                 | Clientes identificados por teléfono                                |
+| `tables`                    | Mesas con estado y token QR                                        |
+| `menu_items`                | Platos del menú                                                    |
+| `orders` / `order_items`    | Pedidos y sus ítems                                                |
+| `payments`                  | Pagos asociados a pedidos                                          |
+| `sessions` / `message_logs` | Sesiones y logs del canal conversacional (proyecto base)           |
+
 
 Arquitectura por **features**: cada módulo contiene `models.py`, `schemas.py`, `service.py` y `router.py`. El esquema se crea con `Base.metadata.create_all` (ver `setup_db.py` y `main.py` → `initialize_database()`).
 
@@ -164,8 +183,8 @@ Arquitectura por **features**: cada módulo contiene `models.py`, `schemas.py`, 
 
 El sistema usa **dos tokens JWT**:
 
-1. **`access_token`** — Se obtiene con `POST /auth/login`. Protege operaciones de lectura y administración general.
-2. **`sales_token`** — Se obtiene con `POST /auth/sales-verify` (requiere `access_token` activo). Protege operaciones sensibles: crear/eliminar pedidos, clientes y pagos.
+1. `**access_token`** — Se obtiene con `POST /auth/login`. Protege operaciones de lectura y administración general.
+2. `**sales_token**` — Se obtiene con `POST /auth/sales-verify` (requiere `access_token` activo). Protege operaciones sensibles: crear/eliminar pedidos, clientes y pagos.
 
 En las peticiones protegidas, enviar el header:
 
@@ -179,23 +198,25 @@ Algunos endpoints usan `get_current_admin` y otros `get_sales_access` dentro del
 
 ## Endpoints principales
 
-| Método | Ruta | Auth | Descripción |
-|--------|------|------|-------------|
-| GET | `/health` | — | Health check |
-| POST | `/auth/login` | — | Iniciar sesión |
-| POST | `/auth/sales-verify` | access | Obtener token de ventas |
-| GET | `/orders` | access | Listar pedidos (filtros) |
-| GET | `/orders/summary` | access | KPIs del día |
-| POST | `/orders` | sales | Crear pedido |
-| PATCH | `/orders/{id}/status` | access | Cambiar estado |
-| GET/POST/PATCH/DELETE | `/customers` | access / sales | CRUD clientes |
-| GET/POST/PUT/DELETE | `/menu-items` | access | CRUD menú |
-| GET/POST/PUT/DELETE | `/tables` | access | CRUD mesas |
-| GET | `/tables/{id}/qr` | access | QR de mesa |
-| GET | `/sales/summary` | sales | Resumen de ventas |
-| GET/POST/PATCH | `/sales/payments` | sales | Gestión de pagos |
 
-Documentación completa e interactiva en **`/docs`**: `https://proyectodegestionderestaurante-back-production.up.railway.app/docs` (producción) o `http://127.0.0.1:8000/docs` (local).
+| Método                | Ruta                  | Auth           | Descripción              |
+| --------------------- | --------------------- | -------------- | ------------------------ |
+| GET                   | `/health`             | —              | Health check             |
+| POST                  | `/auth/login`         | —              | Iniciar sesión           |
+| POST                  | `/auth/sales-verify`  | access         | Obtener token de ventas  |
+| GET                   | `/orders`             | access         | Listar pedidos (filtros) |
+| GET                   | `/orders/summary`     | access         | KPIs del día             |
+| POST                  | `/orders`             | sales          | Crear pedido             |
+| PATCH                 | `/orders/{id}/status` | access         | Cambiar estado           |
+| GET/POST/PATCH/DELETE | `/customers`          | access / sales | CRUD clientes            |
+| GET/POST/PUT/DELETE   | `/menu-items`         | access         | CRUD menú                |
+| GET/POST/PUT/DELETE   | `/tables`             | access         | CRUD mesas               |
+| GET                   | `/tables/{id}/qr`     | access         | QR de mesa               |
+| GET                   | `/sales/summary`      | sales          | Resumen de ventas        |
+| GET/POST/PATCH        | `/sales/payments`     | sales          | Gestión de pagos         |
+
+
+Documentación completa e interactiva en `**/docs**`: `https://proyectodegestionderestaurante-back-production.up.railway.app/docs` (producción) o `http://127.0.0.1:8000/docs` (local).
 
 ---
 
@@ -257,11 +278,13 @@ Repositorio frontend: [ProyectoDeGestionDeRestaurante-Front](https://github.com/
 
 En cada **push** o **pull request** a `main`/`master`, el pipeline en `.github/workflows/ci.yml` ejecuta **tres jobs en paralelo**:
 
-| Job | Herramienta | Qué valida |
-|-----|-------------|------------|
-| **Lint & Format** | [Ruff](https://docs.astral.sh/ruff/) | Estilo de código y errores estáticos (Python 3.11 y 3.12) |
-| **Import & App Verification** | Smoke test | Que la app FastAPI inicialice sin errores (Python 3.11 y 3.12) |
-| **Dependency Security Audit** | [pip-audit](https://pypi.org/project/pip-audit/) | Vulnerabilidades conocidas en dependencias (Python 3.12) |
+
+| Job                           | Herramienta                                      | Qué valida                                                     |
+| ----------------------------- | ------------------------------------------------ | -------------------------------------------------------------- |
+| **Lint & Format**             | [Ruff](https://docs.astral.sh/ruff/)             | Estilo de código y errores estáticos (Python 3.11 y 3.12)      |
+| **Import & App Verification** | Smoke test                                       | Que la app FastAPI inicialice sin errores (Python 3.11 y 3.12) |
+| **Dependency Security Audit** | [pip-audit](https://pypi.org/project/pip-audit/) | Vulnerabilidades conocidas en dependencias (Python 3.12)       |
+
 
 Si cualquier job falla, el pipeline se marca como fallido.
 
@@ -272,23 +295,28 @@ pip install ruff
 ruff check .
 ruff format --check .
 ```
+
 ---
 
 ## Herramientas de IA utilizadas
 
-| Herramienta | Rol en el proyecto |
-|-------------|-------------------|
+
+| Herramienta                 | Rol en el proyecto                                                                                      |
+| --------------------------- | ------------------------------------------------------------------------------------------------------- |
 | **Claude Code** (navegador) | Generación del código backend: modelos, servicios, routers, autenticación JWT y estructura por features |
-| **Cursor** | Documentación, depuración, scripts de seed, CI/CD y preparación para despliegue |
+| **Cursor**                  | Documentación, depuración, scripts de seed, CI/CD y preparación para despliegue                         |
+
 
 ---
 
 ## Repositorios relacionados
 
-| Repo | Enlace | Demo |
-|------|--------|------|
-| **Frontend** | [ProyectoDeGestionDeRestaurante-Front](https://github.com/EmiG4rcia/ProyectoDeGestionDeRestaurante-Front) | `https://proyecto-de-gestion-de-restaurante.vercel.app` |
-| **Backend** (este repo) | [ProyectoDeGestionDeRestaurante-Back](https://github.com/EmiG4rcia/ProyectoDeGestionDeRestaurante-Back) | `https://proyectodegestionderestaurante-back-production.up.railway.app/docs` |
+
+| Repo                    | Enlace                                                                                                    | Demo                                                                         |
+| ----------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Frontend**            | [ProyectoDeGestionDeRestaurante-Front](https://github.com/EmiG4rcia/ProyectoDeGestionDeRestaurante-Front) | `https://proyecto-de-gestion-de-restaurante.vercel.app`                      |
+| **Backend** (este repo) | [ProyectoDeGestionDeRestaurante-Back](https://github.com/EmiG4rcia/ProyectoDeGestionDeRestaurante-Back)   | `https://proyectodegestionderestaurante-back-production.up.railway.app/docs` |
+
 
 ---
 
